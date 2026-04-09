@@ -346,13 +346,74 @@ The following FASTA files contain curated protein sequences used for comparative
 | CSP_arthropod.fasta | 153 | Chemosensory Proteins: Broadly expressed soluble carriers. |
 | SNMP_arthropod.fasta | 224 | Sensory Neuron Membrane Proteins: Essential pheromone co-factors. |
 
+# 8. Target Discovery: The H. dromedarii Chemosensory Repertoire
 
+Using the curated arthropod databases generated, a reciprocal blastp search was performed against the 53,646 predicted proteins of H. dromedarii to identify high-confidence orthologs.
 
+```bash
+#!/bin/bash
+#SBATCH --job-name=Hdrom_Extract
+#SBATCH --partition=debug
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=8G
+#SBATCH --output=extract_%j.log
 
+# 1. Setup Paths
+QUERY_PEP="/nfs/amukami/Denovo/trinity_out/Trinity.fasta.transdecoder.pep"
+RESULTS_DIR="/nfs/amukami/Denovo/trinity_out/scoreboard_results"
+OUTPUT_DIR="/nfs/amukami/Denovo/trinity_out/extracted_sequences"
 
+mkdir -p $OUTPUT_DIR
 
+# 2. Families to extract
+FAMILIES=("IR" "OBP" "SNMP" "GR")
 
+echo "--- Starting Sequence Extraction (Python Version) ---"
 
+for FAM in "${FAMILIES[@]}"; do
+    TAB_FILE="$RESULTS_DIR/${FAM}_Hdrom_matches.tab"
+    ID_FILE="$OUTPUT_DIR/${FAM}_ids.txt"
+    FASTA_OUT="$OUTPUT_DIR/Hdrom_${FAM}_sequences.fasta"
 
+    if [ -f "$TAB_FILE" ]; then
+        # Get unique Trinity IDs
+        cut -f2 "$TAB_FILE" | sort | uniq > "$ID_FILE"
 
+        # Use Python to extract sequences safely
+        python3 -c "
+import sys
+ids = set(line.strip() for line in open('$ID_FILE'))
+with open('$QUERY_PEP') as f:
+    keep = False
+    for line in f:
+        if line.startswith('>'):
+            # Grab the ID before any spaces or dots
+            header_id = line[1:].split()[0].split('.')[0]
+            # Also check full ID in case versioning matters
+            full_id = line[1:].split()[0]
+            keep = header_id in ids or full_id in ids
+        if keep:
+            print(line, end='')
+        " > "$FASTA_OUT"
 
+        COUNT=$(grep -c ">" "$FASTA_OUT")
+        echo "Family $FAM: Extracted $COUNT sequences."
+    else
+        echo "Family $FAM: No BLAST results found, skipping."
+    fi
+done
+
+echo "Extraction complete."
+```
+
+Results: The H. dromedarii Sensory Scoreboard
+
+| Gene Family                                   | H. dromedarii Sequence Count |
+|----------------------------------------------|------------------------------|
+| Odorant Binding Proteins (OBPs)              | 64                           |
+| Ionotropic Receptors (IRs)                   | 42                           |
+| Sensory Neuron Membrane Proteins (SNMPs)     | 17                           |
+| Gustatory Receptors (GRs)                    | 1                            |
+| Odorant Receptors (ORs)                      | 0                            |
