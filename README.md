@@ -410,17 +410,15 @@ echo "Extraction complete."
 
 Results: The H. dromedarii Sensory Scoreboard
 
-| Gene Family                                   | H. dromedarii Sequence Count |
-|----------------------------------------------|------------------------------|
-| Odorant Binding Proteins (OBPs)              | 64                           |
-| Ionotropic Receptors (IRs)                   | 42                           |
-| Sensory Neuron Membrane Proteins (SNMPs)     | 17                           |
-| Gustatory Receptors (GRs)                    | 1                            |
-| Chemosensory Proteins (CSPs)                 | 0                            |
-| Odorant Receptors (ORs)                      | 0                            |
-# Phylogenetic Tree Construction
-
-
+| Gene Family                                   | 1e-2 | 1e-3 | 1e-5 | 1e-10 |
+|----------------------------------------------|------|------|------|-------|
+| Ionotropic Receptors (IRs)                   | 134  | 117  | 82   | 42    |
+| Odorant Binding Proteins (OBPs)              | 74   | 73   | 70   | 64    |
+| Sensory Neuron Membrane Proteins (SNMPs)     | 23   | 20   | 20   | 17    |
+| Gustatory Receptors (GRs)                    | 28   | 13   | 3    | 1     |
+| Odorant Receptors (ORs)                      | 10   | 2    | 0    | 0     |
+| Chemosensory Proteins (CSPs)                 | 2    | 0    | 0    | 0     |
+| **TOTAL CANDIDATES**                         | **271** | **225** | **175** | **124** |
 
 
 
