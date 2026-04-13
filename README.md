@@ -416,8 +416,8 @@ Results: The H. dromedarii Sensory Scoreboard
 | Ionotropic Receptors (IRs)                   | 42                           |
 | Sensory Neuron Membrane Proteins (SNMPs)     | 17                           |
 | Gustatory Receptors (GRs)                    | 1                            |
+| Chemosensory Proteins (CSPs)                 | 0                            |
 | Odorant Receptors (ORs)                      | 0                            |
-
 # Phylogenetic Tree Construction
 
 
